@@ -1,0 +1,4 @@
+0.1.0:
+- Initial release;
+- Read categories, feeds, feeds headlines and articles;
+- Manual read/unread state;
