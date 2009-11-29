@@ -10,7 +10,6 @@
 <string name="AboutActivity.LicenseText">License:</string>
 <string name="AboutActivity.LicenseTextValue">GPL v3</string>
 
-<string name="ArticleActivity.UpdateState">Updating state</string>
 <string name="ArticleActivity.OpenLink">Open article</string>
 <string name="ArticleActivity.OpenCommentLink">Open comments</string>
 <string name="ArticleActivity.MarkRead">Mark as read</string>
@@ -18,6 +17,10 @@
 
 <string name="Commons.PleaseWait">Please wait...</string>
 <string name="Commons.NothingToDisplay">Nothing to display.</string>
+<string name="Commons.UpdateReadState">Updating read state</string>
+
+<string name="FeedHeadlinesListActivity.MarkAllRead">Mark all as read</string>
+<string name="FeedHeadlinesListActivity.MarkAllUnread">Mark all as unread</string>
 
 <string name="ConnectionPreferenceCategoryTitle">Connection</string>
 <string name="ConnectionUrlPreferenceTitle">Connection URL</string>

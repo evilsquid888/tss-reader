@@ -15,22 +15,35 @@
 
 package org.ttrssreader.model.article;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.ttrssreader.controllers.Controller;
 import org.ttrssreader.model.IUpdatable;
 
 public class ArticleReadStateUpdater implements IUpdatable {
 	
-	private String mArticleId;
+	private List<String> mArticleIdList;
 	private int mArticleState;
 	
+	public ArticleReadStateUpdater(List<String> articleIdList, int articleState) {
+		mArticleIdList = articleIdList;
+		mArticleState = articleState;
+	}
+	
 	public ArticleReadStateUpdater(String articleId, int articleState) {
-		mArticleId = articleId;
+		mArticleIdList = new ArrayList<String>();
+		mArticleIdList.add(articleId);
 		mArticleState = articleState;
 	}
 
 	@Override
 	public void update() {
-		Controller.getInstance().getXmlRpcConnector().setArticleRead(mArticleId, mArticleState);
+		Iterator<String> iter = mArticleIdList.iterator();
+		while (iter.hasNext()) {
+			Controller.getInstance().getXmlRpcConnector().setArticleRead(iter.next(), mArticleState);
+		}
 		Controller.getInstance().setRefreshNeeded(true);
 	}
 

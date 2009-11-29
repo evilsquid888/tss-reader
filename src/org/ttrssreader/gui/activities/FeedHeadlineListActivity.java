@@ -18,7 +18,10 @@ package org.ttrssreader.gui.activities;
 import org.ttrssreader.R;
 import org.ttrssreader.controllers.Controller;
 import org.ttrssreader.gui.IRefreshEndListener;
+import org.ttrssreader.gui.IUpdateEndListener;
 import org.ttrssreader.model.Refresher;
+import org.ttrssreader.model.Updater;
+import org.ttrssreader.model.article.ArticleReadStateUpdater;
 import org.ttrssreader.model.feedheadline.FeedHeadlineListAdapter;
 
 import android.app.ListActivity;
@@ -30,11 +33,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-public class FeedHeadlineListActivity extends ListActivity implements IRefreshEndListener {
+public class FeedHeadlineListActivity extends ListActivity implements IRefreshEndListener, IUpdateEndListener {
 	
 	private static final int ACTIVITY_SHOW_FEED_ITEM = 0;
 	
 	private static final int MENU_REFRESH = Menu.FIRST;
+	private static final int MENU_MARK_ALL_READ = Menu.FIRST + 1;
+	private static final int MENU_MARK_ALL_UNREAD = Menu.FIRST + 2;
 	
 	public static final String FEED_ID = "FEED_ID";
 	public static final String FEED_TITLE = "FEED_TITLE";
@@ -106,7 +111,11 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
     	MenuItem item;
     	
     	item = menu.add(0, MENU_REFRESH, 0, R.string.Main_RefreshMenu);
-        item.setIcon(R.drawable.refresh32);              
+        item.setIcon(R.drawable.refresh32);    
+        
+        item = menu.add(0, MENU_MARK_ALL_READ, 0, R.string.FeedHeadlinesListActivity_MarkAllRead);
+        
+        item = menu.add(0, MENU_MARK_ALL_UNREAD, 0, R.string.FeedHeadlinesListActivity_MarkAllUnread);
         
     	return true;
     }
@@ -117,10 +126,25 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
     	case MENU_REFRESH:
     		doRefresh();
             return true;  	
+    	case MENU_MARK_ALL_READ:
+    		changeReadState(1);
+            return true;
+    	case MENU_MARK_ALL_UNREAD:
+    		changeReadState(0);
+            return true;
     	}
     	
     	return super.onMenuItemSelected(featureId, item);
     }
+	
+	private void changeReadState(int articleState) {
+		
+		mProgressDialog = ProgressDialog.show(this,
+				this.getResources().getString(R.string.Commons_UpdateReadState),
+				this.getResources().getString(R.string.Commons_PleaseWait));
+		
+		new Updater(this, new ArticleReadStateUpdater(mAdapter.getIdList(), articleState));
+	}
 
 	private void openConnectionErrorDialog(String errorMessage) {
 		Intent i = new Intent(this, ConnectionErrorActivity.class);
@@ -144,5 +168,11 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
 		
 		mProgressDialog.dismiss();		
 	}
+
+	@Override
+	public void onUpdateEnd() {
+		mProgressDialog.dismiss();
+		doRefresh();
+	}	
 
 }

@@ -131,7 +131,7 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 	private void changeReadState(int articleState) {
 		
 		mProgressDialog = ProgressDialog.show(this,
-				this.getResources().getString(R.string.ArticleActivity_UpdateState),
+				this.getResources().getString(R.string.Commons_UpdateReadState),
 				this.getResources().getString(R.string.Commons_PleaseWait));
 		
 		new Updater(this, new ArticleReadStateUpdater(mArticleId, articleState));
