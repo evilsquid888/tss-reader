@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceCategory android:title="@string/ConnectionPreferenceCategoryTitle">
+<EditTextPreference
+			android:name="@string/ConnectionUrlPreferenceTitle"
+			android:summary="@string/ConnectionUrlPreferenceSummary"
+			android:defaultValue="http://localhost/"
+			android:title="@string/ConnectionUrlPreferenceTitle"
+			android:key="ConnectionUrlPreference" />
+<EditTextPreference
+			android:name="@string/ConnectionUsernamePreferenceTitle"
+			android:summary="@string/ConnectionUsernamePreferenceSummary"
+			android:defaultValue=""
+			android:title="@string/ConnectionUsernamePreferenceTitle"
+			android:key="ConnectionUsernamePreference" />
+<EditTextPreference
+			android:name="@string/ConnectionPasswordPreferenceTitle"
+			android:summary="@string/ConnectionPasswordPreferenceSummary"
+			android:defaultValue=""
+			android:title="@string/ConnectionPasswordPreferenceTitle"
+			android:key="ConnectionPasswordPreference" 
+			android:password="true"  />
+</PreferenceCategory>
+</PreferenceScreen>
