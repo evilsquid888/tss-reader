@@ -26,6 +26,7 @@ import org.ttrssreader.controllers.Controller;
 import org.ttrssreader.model.IRefreshable;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,9 +134,9 @@ public class CategoryListAdapter extends BaseAdapter implements IRefreshable {
         
         public void setBoldTitleIfNecessary(boolean isUnread) {
         	if (isUnread) {
-        		mTitle.setTypeface(mTitle.getTypeface(), 1);
+        		mTitle.setTypeface(Typeface.DEFAULT_BOLD, 1);
         	} else {
-        		mTitle.setTypeface(mTitle.getTypeface(), 0);
+        		mTitle.setTypeface(Typeface.DEFAULT, 0);
         	}
         }
         

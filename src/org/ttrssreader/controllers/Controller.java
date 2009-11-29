@@ -19,8 +19,6 @@ import org.ttrssreader.preferences.PreferencesConstants;
 import org.ttrssreader.xmlrpc.TtrssXmlRpcConnector;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 
 public class Controller {
@@ -61,17 +59,7 @@ public class Controller {
 	}
 	
 	public void initializeXmlRpcController(final Context context) {
-		if (!mIsXmlRpcClientLibInitialized) {		
-			PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(new OnSharedPreferenceChangeListener() {
-				@Override
-				public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-					if ((key.equals(PreferencesConstants.CONNECTION_URL)) ||
-							(key.equals(PreferencesConstants.CONNECTION_USERNAME)) ||
-							(key.equals(PreferencesConstants.CONNECTION_PASSWORD))) {
-						initializeXmlRpcConnector(context);
-					}
-				}			
-			});
+		if (!mIsXmlRpcClientLibInitialized) {					
 
 			initializeXmlRpcConnector(context);
 

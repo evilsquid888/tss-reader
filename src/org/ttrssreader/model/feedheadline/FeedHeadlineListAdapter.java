@@ -28,6 +28,7 @@ import org.ttrssreader.model.article.ArticleItem;
 import org.ttrssreader.utils.DateUtils;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -99,7 +100,8 @@ public class FeedHeadlineListAdapter extends BaseAdapter implements IRefreshable
             
             sv.setIcon(mFeeds.get(position).isUnread());
             sv.setBoldTitleIfNecessary(mFeeds.get(position).isUnread());
-            sv.setTitle(mFeeds.get(position).getTitle());                                               
+            sv.setTitle(mFeeds.get(position).getTitle());   
+            sv.setUpdateDate(mContext, mFeeds.get(position).getUpdateDate());
         }
 
         return sv;
@@ -136,7 +138,7 @@ public class FeedHeadlineListAdapter extends BaseAdapter implements IRefreshable
             
             mUpdateDate = new TextView(context);
             mUpdateDate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);            
-            mUpdateDate.setText(DateUtils.getDisplayDate(context, updatedDate));
+            setUpdateDate(context, updatedDate);
             textLayout.addView(mUpdateDate, new LinearLayout.LayoutParams(
             		LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         }
@@ -150,9 +152,9 @@ public class FeedHeadlineListAdapter extends BaseAdapter implements IRefreshable
         
         public void setBoldTitleIfNecessary(boolean isUnread) {
         	if (isUnread) {
-        		mTitle.setTypeface(mTitle.getTypeface(), 1);
+        		mTitle.setTypeface(Typeface.DEFAULT_BOLD, 1);
         	} else {
-        		mTitle.setTypeface(mTitle.getTypeface(), 0);
+        		mTitle.setTypeface(Typeface.DEFAULT, 0);
         	}
         }
         
@@ -162,7 +164,11 @@ public class FeedHeadlineListAdapter extends BaseAdapter implements IRefreshable
             } else {
             	mIcon.setImageResource(R.drawable.articleread48);
             }
-        }         
+        }    
+        
+        public void setUpdateDate(Context context, Date updatedDate) {
+        	mUpdateDate.setText(DateUtils.getDisplayDate(context, updatedDate));
+        }
 
         private ImageView mIcon;
         private TextView mTitle;
