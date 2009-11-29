@@ -127,23 +127,32 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
     		doRefresh();
             return true;  	
     	case MENU_MARK_ALL_READ:
-    		changeReadState(1);
+    		setReadState();
             return true;
     	case MENU_MARK_ALL_UNREAD:
-    		changeReadState(0);
+    		setUnreadState();
             return true;
     	}
     	
     	return super.onMenuItemSelected(featureId, item);
     }
 	
-	private void changeReadState(int articleState) {
+	private void setReadState() {
 		
 		mProgressDialog = ProgressDialog.show(this,
 				this.getResources().getString(R.string.Commons_UpdateReadState),
 				this.getResources().getString(R.string.Commons_PleaseWait));
 		
-		new Updater(this, new ArticleReadStateUpdater(mAdapter.getIdList(), articleState));
+		new Updater(this, new ArticleReadStateUpdater(mAdapter.getUnreadIdList(), 1));
+	}
+	
+	private void setUnreadState() {
+		
+		mProgressDialog = ProgressDialog.show(this,
+				this.getResources().getString(R.string.Commons_UpdateReadState),
+				this.getResources().getString(R.string.Commons_PleaseWait));
+		
+		new Updater(this, new ArticleReadStateUpdater(mAdapter.getReadIdList(), 0));
 	}
 
 	private void openConnectionErrorDialog(String errorMessage) {
