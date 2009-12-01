@@ -117,20 +117,29 @@ public class DataController {
 		
 		List<CategoryItem> finalList = new ArrayList<CategoryItem>();
 		
-		Iterator<CategoryItem> iter = internalGetVirtualCategories().iterator();
-		while (iter.hasNext()) {
-			finalList.add(iter.next());
-		}		
-		Collections.sort(finalList, new VirtualCategoryItemComparator());
+		List<CategoryItem> virtualList = internalGetVirtualCategories();
+		
+		if (virtualList != null) {
+			Iterator<CategoryItem> iter = virtualList.iterator();
+			while (iter.hasNext()) {
+				finalList.add(iter.next());
+			}		
+			Collections.sort(finalList, new VirtualCategoryItemComparator());
+		}
 		
 		mForceFullRefresh = tmpForceFullRefresh;
 		
 		List<CategoryItem> tempList = new ArrayList<CategoryItem>();
-		iter = internalGetCategories().iterator();
-		while (iter.hasNext()) {
-			tempList.add(iter.next());
+		
+		List<CategoryItem> categoryList = internalGetCategories();
+		
+		if (categoryList != null) {
+			Iterator<CategoryItem> iter = categoryList.iterator();
+			while (iter.hasNext()) {
+				tempList.add(iter.next());
+			}
+			Collections.sort(tempList, new CategoryItemComparator());
 		}
-		Collections.sort(tempList, new CategoryItemComparator());
 		
 		for (CategoryItem category : tempList) {
 			finalList.add(category);
