@@ -22,6 +22,7 @@ import org.ttrssreader.gui.IUpdateEndListener;
 import org.ttrssreader.model.Refresher;
 import org.ttrssreader.model.Updater;
 import org.ttrssreader.model.article.ArticleItem;
+import org.ttrssreader.model.article.ArticleItemAdapter;
 import org.ttrssreader.model.article.ArticleReadStateUpdater;
 
 import android.app.Activity;
@@ -45,7 +46,10 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 	
 	private String mArticleId;
 	private String mFeedId;
+	
 	private ArticleItem mArticleItem = null;
+	
+	private ArticleItemAdapter mAdapter = null;
 	
 	private WebView webview;	
 	private ProgressDialog mProgressDialog;
@@ -124,8 +128,10 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 		
 		mProgressDialog = ProgressDialog.show(this, "Refreshing", this.getResources().getString(R.string.Commons_PleaseWait));
 
-		mArticleItem = new ArticleItem(mFeedId, mArticleId);
-		new Refresher(this, mArticleItem);
+		mAdapter = new ArticleItemAdapter(mFeedId, mArticleId);
+		new Refresher(this, mAdapter);
+		//mArticleItem = new ArticleItem(mFeedId, mArticleId);		
+		//new Refresher(this, mArticleItem);
 	}
 	
 	private void changeReadState(int articleState) {
@@ -134,7 +140,7 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 				this.getResources().getString(R.string.Commons_UpdateReadState),
 				this.getResources().getString(R.string.Commons_PleaseWait));
 		
-		new Updater(this, new ArticleReadStateUpdater(mArticleId, articleState));
+		new Updater(this, new ArticleReadStateUpdater(mFeedId, mArticleId, articleState));
 	}
 	
 	private void openUrl(String url) {		
@@ -172,6 +178,8 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 	@Override
 	public void onRefreshEnd() {
 		if (!Controller.getInstance().getXmlRpcConnector().hasLastError()) {
+			mArticleItem = mAdapter.getArticle();
+			
 			if (mArticleItem != null) {
 				// Use if loadDataWithBaseURL, 'cause loadData is buggy (encoding error & don't support "%" in html).				
 				webview.loadDataWithBaseURL (null, mArticleItem.getContent(), "text/html", "utf-8", "about:blank"); 														

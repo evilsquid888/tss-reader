@@ -19,9 +19,8 @@ import java.util.Date;
 import java.util.Map;
 
 import org.ttrssreader.controllers.Controller;
-import org.ttrssreader.model.IRefreshable;
 
-public class ArticleItem implements IRefreshable {
+public class ArticleItem {
 
 	private String mId;
 	private String mTitle;
@@ -31,7 +30,7 @@ public class ArticleItem implements IRefreshable {
 	private String mArticleUrl;
 	private String mArticleCommentUrl;
 	private Date mUpdateDate;
-	private boolean mIsContentLoaded;		
+	private boolean mIsContentLoaded;
 
 	public ArticleItem(String feedId, String id) {
 		this(feedId, id, null, false, null);
@@ -61,8 +60,16 @@ public class ArticleItem implements IRefreshable {
 		return mTitle;
 	}
 	
+	public void setTitle(String value) {
+		mTitle = value;
+	}
+	
 	public boolean isUnread() {
 		return mIsUnread;
+	}
+	
+	public void setUnread(boolean value) {
+		mIsUnread = value;
 	}
 	
 	public String getContent() {
@@ -73,8 +80,16 @@ public class ArticleItem implements IRefreshable {
 		return mArticleUrl;
 	}
 	
+	public void setArticleUrl(String value) {
+		mArticleUrl = value;
+	}
+	
 	public String getArticleCommentUrl() {
 		return mArticleCommentUrl;
+	}
+	
+	public void setArticleCommentUrl(String value) {
+		mArticleCommentUrl = value;
 	}
 	
 	public void setContent(String value) {
@@ -88,9 +103,8 @@ public class ArticleItem implements IRefreshable {
 	public boolean isContentLoaded() {
 		return mIsContentLoaded;
 	}
-
-	@Override
-	public void refreshData() {
+	
+	public void doLoadContent() {
 		Map<?, ?> result = Controller.getInstance().getXmlRpcConnector().getArticle(new Integer(mId).intValue());
 		if (result != null) {
 			mContent = result.get("content").toString();
@@ -113,8 +127,8 @@ public class ArticleItem implements IRefreshable {
 					mUpdateDate = null;
 				}
 			}
-		}		
+		}
 		mIsContentLoaded = true;
-	}	
+	}
 	
 }

@@ -19,10 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import org.ttrssreader.R;
-import org.ttrssreader.controllers.Controller;
+import org.ttrssreader.controllers.DataController;
 import org.ttrssreader.model.IRefreshable;
 import org.ttrssreader.model.article.ArticleItem;
 import org.ttrssreader.utils.DateUtils;
@@ -207,26 +205,7 @@ public class FeedHeadlineListAdapter extends BaseAdapter implements IRefreshable
 	
 	@Override
 	public void refreshData() {
-		mFeeds = new ArrayList<ArticleItem>();
-				
-		Map<?, ?> result = Controller.getInstance().getXmlRpcConnector().getFeedHeadlines(new Integer(mFeedId).intValue(), 100, 0);
-		
-		if (result != null) {
-			ArticleItem feedItem;
-			Map<?, ?> item;
-			
-			Object[] feedArray = (Object[]) result.get("headlines");
-			for (int i = 0; i < feedArray.length; i++) {
-				item = (Map<?, ?>) feedArray[i];
-				feedItem = new ArticleItem(mFeedId,
-						item.get("id").toString(),
-						item.get("title").toString(),
-						new Boolean(item.get("unread").toString()).booleanValue(),
-						// PHP strtotime gives timestamp in seconds.
-						new Date(new Long(item.get("updated").toString() + "000").longValue()));
-				mFeeds.add(feedItem);
-			}					
-		}						
+		mFeeds = DataController.getInstance().getArticlesForFeedsHeadlines(mFeedId);				
 	}
 
 }

@@ -19,10 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import org.ttrssreader.R;
-import org.ttrssreader.controllers.Controller;
+import org.ttrssreader.controllers.DataController;
 import org.ttrssreader.model.IRefreshable;
 
 import android.content.Context;
@@ -165,28 +163,7 @@ public class FeedListAdapter extends BaseAdapter implements IRefreshable {
 
 	@Override
 	public void refreshData() {
-		mFeeds = new ArrayList<FeedItem>();
-		
-		List<Map<?, ?>> feedsList = Controller.getInstance().getXmlRpcConnector().getSubsribedFeeds();
-		
-		if (feedsList != null) {
-			FeedItem feedItem;
-			Map<?, ?> item;
-			
-			Iterator<Map<?, ?>> iter = feedsList.iterator();
-			while (iter.hasNext()) {
-				item = iter.next();
-				
-				if (item.get("cat_id").toString().equals(mCategoryId)) {					
-					feedItem = new FeedItem(item.get("id").toString(),
-							item.get("title").toString(),
-							item.get("feed_url").toString(),
-							new Integer(item.get("unread").toString()).intValue());
-					mFeeds.add(feedItem);
-				}
-			}		
-		}
-		
+		mFeeds = DataController.getInstance().getSubscribedFeedsByCategory(mCategoryId);
 		Collections.sort(mFeeds, new FeedItemComparator());
 		
 	}

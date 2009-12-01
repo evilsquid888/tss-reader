@@ -17,6 +17,7 @@ package org.ttrssreader.gui.activities;
 
 import org.ttrssreader.R;
 import org.ttrssreader.controllers.Controller;
+import org.ttrssreader.controllers.DataController;
 import org.ttrssreader.gui.IRefreshEndListener;
 import org.ttrssreader.model.Refresher;
 import org.ttrssreader.model.feed.FeedListAdapter;
@@ -128,12 +129,17 @@ public class FeedListActivity extends ListActivity implements IRefreshEndListene
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
     	switch(item.getItemId()) {
     	case MENU_REFRESH:
-    		doRefresh();
+    		doForceRefresh();
             return true;
     	}
     	
     	return super.onMenuItemSelected(featureId, item);
     }
+	
+	private void doForceRefresh() {
+		DataController.getInstance().forceFullRefresh();
+		doRefresh();
+	}
 
 	private void openConnectionErrorDialog(String errorMessage) {
 		Intent i = new Intent(this, ConnectionErrorActivity.class);

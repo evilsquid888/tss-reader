@@ -16,6 +16,7 @@
 package org.ttrssreader.xmlrpc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,8 +24,9 @@ import java.util.Map;
 
 import org.external.xmlrpc.android.XMLRPCClient;
 import org.external.xmlrpc.android.XMLRPCException;
-
-import android.util.Log;
+import org.ttrssreader.model.article.ArticleItem;
+import org.ttrssreader.model.category.CategoryItem;
+import org.ttrssreader.model.feed.FeedItem;
 
 public class TtrssXmlRpcConnector {
 
@@ -42,9 +44,7 @@ public class TtrssXmlRpcConnector {
 	private String mPassword;
 	
 	private String mLastError = "";
-	private boolean mHasLastError = false;;
-	
-	//private Map<String, String> mFeedCategoryMap = null;
+	private boolean mHasLastError = false;
 	
 	private XMLRPCClient mClient;
 	
@@ -52,7 +52,6 @@ public class TtrssXmlRpcConnector {
 		mServerUrl = serverUrl;
 		mUserName = userName;
 		mPassword = password;
-		//mFeedCategoryMap = null;
 		internalBuildClient();
 	}
 	
@@ -72,12 +71,6 @@ public class TtrssXmlRpcConnector {
 		return mLastError;
 	}
 	
-	/*
-	public Map<String, String> getFeedCategoryMap() {
-		return mFeedCategoryMap;
-	}
-	*/
-	
 	@SuppressWarnings("unchecked")
 	private List getNewParamListWithAuthentication() {
 		List params = new ArrayList();
@@ -85,23 +78,6 @@ public class TtrssXmlRpcConnector {
 		params.add(mPassword);
 		
 		return params;
-	}
-	
-	private List<Map<?, ?>> convertResultArray(Object input) {
-		if (input != null) {
-			
-			Object[] objectResult = (Object[]) input;
-			
-			List<Map<?, ?>> resultList = new ArrayList<Map<?, ?>>();
-			
-			for (int i = 0; i < objectResult.length; i++) {			
-				resultList.add((HashMap<?, ?>) objectResult[i]);
-			}
-			
-			return resultList;
-		} else {
-			return null;
-		}
 	}
 	
 	private Object[] convertListToArray(List<?> params) {
@@ -167,19 +143,46 @@ public class TtrssXmlRpcConnector {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Map<?, ?>> getSubsribedFeeds() {
+	public Map<String, List<FeedItem>> getSubsribedFeeds() {
 		List params = getNewParamListWithAuthentication();
 		
-		Object result = internalExecute(METHOD_GET_SUBSRIBES_FEEDS, params);
-
-		List<Map<?, ?>> convertedResult;
-		if (!mHasLastError) {		
-			convertedResult = convertResultArray(result);
-		} else {
-			convertedResult = null;
+		Object tempResult = internalExecute(METHOD_GET_SUBSRIBES_FEEDS, params);
+		
+		Map<String, List<FeedItem>> finalResult = null;
+		
+		if (tempResult != null) {
+			
+			finalResult = new HashMap<String, List<FeedItem>>();
+			
+			Map<?, ?> item;
+			String categoryId;
+			FeedItem feedItem;
+			List<FeedItem> feedItemList;
+			
+			Object[] feedArray =  (Object[]) tempResult;
+			
+			for (int i = 0; i < feedArray.length; i++) {
+				item = (Map<?, ?>) feedArray[i];
+				
+				categoryId = item.get("cat_id").toString();
+				
+				feedItem = new FeedItem(categoryId,
+						item.get("id").toString(),
+						item.get("title").toString(),
+						item.get("feed_url").toString(),
+						new Integer(item.get("unread").toString()).intValue());
+				
+				feedItemList = finalResult.get(categoryId);
+				if (feedItemList == null) {
+					feedItemList = new ArrayList<FeedItem>();
+					finalResult.put(categoryId, feedItemList);
+				}
+				
+				feedItemList.add(feedItem);
+			}
 		}
 		
-		return convertedResult;
+		return finalResult;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -195,22 +198,56 @@ public class TtrssXmlRpcConnector {
 			return null;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Map<?, ?>> getVirtualFeeds() {
-		List params = getNewParamListWithAuthentication();
+	private List<CategoryItem> getCategoriesAsList(Object input) {
+		List<CategoryItem> finalResult = null;
 		
-		Object result = internalExecute(METHOD_GET_VIRTUAL_FEEDS, params);
-		
-		return convertResultArray(result);
+		if (input != null) {
+			
+			finalResult = new ArrayList<CategoryItem>();
+			
+			Object[] feedArray =  (Object[]) input;
+			
+			int unread;
+			Map<?, ?> item;			
+			CategoryItem categoryItem;
+			
+			for (int i = 0; i < feedArray.length; i++) {
+				
+				item = (Map<?, ?>) feedArray[i];							
+				
+				if (item.containsKey("unread")) {
+					unread = new Integer(item.get("unread").toString()).intValue();
+				} else {
+					unread = -1;
+				}
+				
+				categoryItem = new CategoryItem(item.get("id").toString(),
+						item.get("title").toString(),
+						new Integer(unread).intValue());
+				
+				finalResult.add(categoryItem);				
+			}			
+		}
+	
+		return finalResult;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Map<?, ?>> getCategories() {
+	public List<CategoryItem> getVirtualFeeds() {
 		List params = getNewParamListWithAuthentication();
 		
-		Object result = internalExecute(METHOD_GET_CATEGORIES, params);
+		Object tempResult = internalExecute(METHOD_GET_VIRTUAL_FEEDS, params);
 		
-		return convertResultArray(result);		
+		return getCategoriesAsList(tempResult);
+	}	
+	
+	@SuppressWarnings("unchecked")
+	public List<CategoryItem> getCategories() {
+		List params = getNewParamListWithAuthentication();
+		
+		Object tempResult = internalExecute(METHOD_GET_CATEGORIES, params);				
+		
+		return getCategoriesAsList(tempResult);
 	}
 	
 	/**
@@ -221,15 +258,42 @@ public class TtrssXmlRpcConnector {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<?, ?> getFeedHeadlines(int feedId, int limit, int filter) {
+	public List<ArticleItem> getFeedHeadlines(int feedId, int limit, int filter) {
 		List params = getNewParamListWithAuthentication();
 		params.add(new Integer(feedId));
 		params.add(new Integer(limit));
 		params.add(new Integer(filter));
 		
-		Object result = internalExecute(METHOD_GET_FEEDS_HEADLINES, params);
+		Object tmpResult = internalExecute(METHOD_GET_FEEDS_HEADLINES, params);
 		
-		return (Map<?, ?>) result;
+		List<ArticleItem> finalResult = null;
+		
+		if (tmpResult != null) {
+			
+			Map<?, ?> result = (Map<?, ?>) tmpResult;
+			
+			Map<?, ?> item;
+			ArticleItem feedItem;
+			
+			finalResult = new ArrayList<ArticleItem>();
+			
+			Object[] feedArray = (Object[]) result.get("headlines");
+			for (int i = 0; i < feedArray.length; i++) {
+				
+				item = (Map<?, ?>) feedArray[i];
+				
+				feedItem = new ArticleItem(String.valueOf(feedId),
+						item.get("id").toString(),
+						item.get("title").toString(),
+						new Boolean(item.get("unread").toString()).booleanValue(),
+						// PHP strtotime gives timestamp in seconds.
+						new Date(new Long(item.get("updated").toString() + "000").longValue()));
+				
+				finalResult.add(feedItem);
+			}
+		}
+		
+		return finalResult;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -242,7 +306,8 @@ public class TtrssXmlRpcConnector {
 		
 		return result;
 	}
-	
+		
+	/*
 	public void selfTest() {
 		
 		int ARTICLE_TEST_ID = 42;
@@ -306,5 +371,6 @@ public class TtrssXmlRpcConnector {
 			Log.d("TTRssXmlRpcLib.selfTest()", headlines[i].toString());
 		}
 	}
+	*/
 	
 }

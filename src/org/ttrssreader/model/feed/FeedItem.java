@@ -18,18 +18,25 @@ package org.ttrssreader.model.feed;
 public class FeedItem {
 	
 	private String mId;
+	private String mCategoryId;
 	private String mTitle;
 	private String mUrl;
 	private int mUnread;
 	
-	public FeedItem(String id, String title, String url, int unread) {
+	public FeedItem(String categoryId, String id, String title, String url, int unread) {
+		mCategoryId = categoryId;
 		mId = id;
 		mTitle = title;
-		mUnread = unread;
+		mUrl = url;
+		mUnread = unread;		
 	}
 	
 	public String getId() {
 		return mId;
+	}
+	
+	public String getCategoryId() {
+		return mCategoryId;
 	}
 	
 	public String getTitle() {
@@ -42,6 +49,10 @@ public class FeedItem {
 	
 	public int getUnreadCount() {
 		return mUnread;
+	}
+	
+	public void setDeltaUnreadCount(int value) {
+		mUnread += value;
 	}
 
 }

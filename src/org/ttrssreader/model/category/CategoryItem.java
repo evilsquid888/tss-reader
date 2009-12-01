@@ -38,5 +38,15 @@ public class CategoryItem {
 	public int getUnreadCount() {
 		return mUnreadCount;
 	}
+	
+	public boolean isUnreadManaged() {
+		return mUnreadCount >= 0;
+	}
+	
+	public void setDeltaUnreadCount(int value) {
+		if (isUnreadManaged()) {
+			mUnreadCount += value;
+		}
+	}
 
 }

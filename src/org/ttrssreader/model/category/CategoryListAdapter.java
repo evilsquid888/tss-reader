@@ -16,13 +16,9 @@
 package org.ttrssreader.model.category;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import org.ttrssreader.R;
-import org.ttrssreader.controllers.Controller;
+import org.ttrssreader.controllers.DataController;
 import org.ttrssreader.model.IRefreshable;
 
 import android.content.Context;
@@ -163,46 +159,9 @@ public class CategoryListAdapter extends BaseAdapter implements IRefreshable {
     }
 
 	public void refreshData() {
-		mCategories = new ArrayList<CategoryItem>();		
 		
-		List<CategoryItem> tempList = new ArrayList<CategoryItem>();
+		mCategories = DataController.getInstance().getCategories();
 		
-		Iterator<Map<?, ?>> iter;
-		CategoryItem categoryItem;
-		Map<?, ?> item;
-		
-		List<Map<?, ?>> virtualCategories = Controller.getInstance().getXmlRpcConnector().getVirtualFeeds();
-		if (virtualCategories != null) {
-			iter = virtualCategories.iterator();
-			while (iter.hasNext()) {
-				item = iter.next();
-				categoryItem = new CategoryItem(item.get("id").toString(), item.get("title").toString(), new Integer(item.get("unread").toString()).intValue());
-				mCategories.add(categoryItem);
-			}
-			
-			Collections.sort(mCategories, new VirtualCategoryItemComparator());
-
-			List<Map<?, ?>> categories = Controller.getInstance().getXmlRpcConnector().getCategories();
-			iter = categories.iterator();
-			while (iter.hasNext()) {
-				item = iter.next();
-				
-				// "unread" is not in ttrss 1.3.4 by default.
-				if (item.containsKey("unread")) {
-					categoryItem = new CategoryItem(item.get("id").toString(), item.get("title").toString(), new Integer(item.get("unread").toString()).intValue());
-				} else {
-					categoryItem = new CategoryItem(item.get("id").toString(), item.get("title").toString(), 0);
-				}
-				
-				tempList.add(categoryItem);
-			}				
-
-			Collections.sort(tempList, new CategoryItemComparator());
-
-			for (CategoryItem category : tempList) {
-				mCategories.add(category);
-			}
-		}
 	}
 
 }

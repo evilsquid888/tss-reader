@@ -16,6 +16,7 @@
 package org.ttrssreader;
 
 import org.ttrssreader.controllers.Controller;
+import org.ttrssreader.controllers.DataController;
 import org.ttrssreader.gui.IRefreshEndListener;
 import org.ttrssreader.gui.activities.AboutActivity;
 import org.ttrssreader.gui.activities.ConnectionErrorActivity;
@@ -132,7 +133,7 @@ public class TtrssReaderMainActivity extends ListActivity implements IRefreshEnd
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
     	switch(item.getItemId()) {
     	case MENU_REFRESH:
-    		doRefresh();
+    		doForceRefresh();
             return true;
     	case MENU_SHOW_PREFERENCES:
     		openPreferences();
@@ -144,6 +145,11 @@ public class TtrssReaderMainActivity extends ListActivity implements IRefreshEnd
     	
     	return super.onMenuItemSelected(featureId, item);
     }
+    
+    private void doForceRefresh() {
+		DataController.getInstance().forceFullRefresh();
+		doRefresh();
+	}
     
     private void openPreferences() {
 		Intent preferencesActivity = new Intent(this, PreferencesActivity.class);

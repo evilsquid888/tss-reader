@@ -17,6 +17,7 @@ package org.ttrssreader.gui.activities;
 
 import org.ttrssreader.R;
 import org.ttrssreader.controllers.Controller;
+import org.ttrssreader.controllers.DataController;
 import org.ttrssreader.gui.IRefreshEndListener;
 import org.ttrssreader.gui.IUpdateEndListener;
 import org.ttrssreader.model.Refresher;
@@ -124,7 +125,7 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
     	switch(item.getItemId()) {
     	case MENU_REFRESH:
-    		doRefresh();
+    		doForceRefresh();
             return true;  	
     	case MENU_MARK_ALL_READ:
     		setReadState();
@@ -137,13 +138,18 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
     	return super.onMenuItemSelected(featureId, item);
     }
 	
+	private void doForceRefresh() {
+		DataController.getInstance().forceFullRefresh();
+		doRefresh();
+	}
+	
 	private void setReadState() {
 		
 		mProgressDialog = ProgressDialog.show(this,
 				this.getResources().getString(R.string.Commons_UpdateReadState),
 				this.getResources().getString(R.string.Commons_PleaseWait));
 		
-		new Updater(this, new ArticleReadStateUpdater(mAdapter.getUnreadIdList(), 1));
+		new Updater(this, new ArticleReadStateUpdater(mFeedId, mAdapter.getUnreadIdList(), 1));
 	}
 	
 	private void setUnreadState() {
@@ -152,7 +158,7 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
 				this.getResources().getString(R.string.Commons_UpdateReadState),
 				this.getResources().getString(R.string.Commons_PleaseWait));
 		
-		new Updater(this, new ArticleReadStateUpdater(mAdapter.getReadIdList(), 0));
+		new Updater(this, new ArticleReadStateUpdater(mFeedId, mAdapter.getReadIdList(), 0));
 	}
 
 	private void openConnectionErrorDialog(String errorMessage) {
