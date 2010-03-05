@@ -105,7 +105,7 @@ public class ArticleItem {
 	}
 	
 	public void doLoadContent() {
-		Map<?, ?> result = Controller.getInstance().getXmlRpcConnector().getArticle(new Integer(mId).intValue());
+		Map<?, ?> result = Controller.getInstance().getTTRSSConnector().getArticle(new Integer(mId).intValue());
 		if (result != null) {
 			mContent = result.get("content").toString();
 			

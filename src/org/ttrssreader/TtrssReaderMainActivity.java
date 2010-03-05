@@ -71,7 +71,7 @@ public class TtrssReaderMainActivity extends ListActivity implements IRefreshEnd
     	
     	mProgressDialog = ProgressDialog.show(this, "Refreshing", this.getResources().getString(R.string.Commons_PleaseWait));
     	
-    	int totalUnread = Controller.getInstance().getXmlRpcConnector().getTotalUnread();
+    	int totalUnread = Controller.getInstance().getTTRSSConnector().getTotalUnread();
     	
     	if (totalUnread > 0) {
     		this.setTitle(this.getResources().getString(R.string.ApplicationName) + " (" + totalUnread + ")");
@@ -169,10 +169,10 @@ public class TtrssReaderMainActivity extends ListActivity implements IRefreshEnd
 
 	@Override
 	public void onRefreshEnd() {
-		if (!Controller.getInstance().getXmlRpcConnector().hasLastError()) {			
+		if (!Controller.getInstance().getTTRSSConnector().hasLastError()) {			
 			mAdapter.notifyDataSetChanged();
 		} else {
-			openConnectionErrorDialog(Controller.getInstance().getXmlRpcConnector().getLastError());
+			openConnectionErrorDialog(Controller.getInstance().getTTRSSConnector().getLastError());
 		}
     	mProgressDialog.dismiss();		
 	}	 

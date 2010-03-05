@@ -27,8 +27,9 @@ import org.external.xmlrpc.android.XMLRPCException;
 import org.ttrssreader.model.article.ArticleItem;
 import org.ttrssreader.model.category.CategoryItem;
 import org.ttrssreader.model.feed.FeedItem;
+import org.ttrssreader.net.ITTRSSConnector;
 
-public class TtrssXmlRpcConnector {
+public class TtrssXmlRpcConnector implements ITTRSSConnector {
 
 	private static final String METHOD_GET_VERSION = "rss.getVersion";
 	private static final String METHOD_GET_TOTAL_UNREAD = "rss.getTotalUnread";

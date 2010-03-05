@@ -177,7 +177,7 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 
 	@Override
 	public void onRefreshEnd() {
-		if (!Controller.getInstance().getXmlRpcConnector().hasLastError()) {
+		if (!Controller.getInstance().getTTRSSConnector().hasLastError()) {
 			mArticleItem = mAdapter.getArticle();
 			
 			if (mArticleItem != null) {
@@ -191,7 +191,7 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 				}
 			}
 		} else {
-			openConnectionErrorDialog(Controller.getInstance().getXmlRpcConnector().getLastError());
+			openConnectionErrorDialog(Controller.getInstance().getTTRSSConnector().getLastError());
 		}
 		
 		mProgressDialog.dismiss();
@@ -199,8 +199,8 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 
 	@Override
 	public void onUpdateEnd() {
-		if (Controller.getInstance().getXmlRpcConnector().hasLastError()) {
-			openConnectionErrorDialog(Controller.getInstance().getXmlRpcConnector().getLastError());
+		if (Controller.getInstance().getTTRSSConnector().hasLastError()) {
+			openConnectionErrorDialog(Controller.getInstance().getTTRSSConnector().getLastError());
 		}
 		
 		mProgressDialog.dismiss();

@@ -61,7 +61,7 @@ public class DataController {
 	private List<CategoryItem> internalGetVirtualCategories() {
 		if ((mVirtualCategories == null) ||
 				(mForceFullRefresh)) {
-			mVirtualCategories = Controller.getInstance().getXmlRpcConnector().getVirtualFeeds();
+			mVirtualCategories = Controller.getInstance().getTTRSSConnector().getVirtualFeeds();
 			mForceFullRefresh = false;
 		}
 		return mVirtualCategories;
@@ -70,7 +70,7 @@ public class DataController {
 	private List<CategoryItem> internalGetCategories() {
 		if ((mCategories == null) ||
 				(mForceFullRefresh)) {
-			mCategories = Controller.getInstance().getXmlRpcConnector().getCategories();
+			mCategories = Controller.getInstance().getTTRSSConnector().getCategories();
 			mForceFullRefresh = false;
 		}
 		return mCategories;
@@ -151,7 +151,7 @@ public class DataController {
 	public Map<String, List<FeedItem>> getSubscribedFeeds() {
 		if ((mSubscribedFeeds == null) ||
 				(mForceFullRefresh)) {
-			mSubscribedFeeds = Controller.getInstance().getXmlRpcConnector().getSubsribedFeeds();
+			mSubscribedFeeds = Controller.getInstance().getTTRSSConnector().getSubsribedFeeds();
 			mForceFullRefresh = false;
 		}
 		return mSubscribedFeeds;
@@ -207,7 +207,7 @@ public class DataController {
 		
 		if ((result == null) ||
 				(mForceFullRefresh)) {
-			result = Controller.getInstance().getXmlRpcConnector().getFeedHeadlines(new Integer(feedId).intValue(), 100, 0);
+			result = Controller.getInstance().getTTRSSConnector().getFeedHeadlines(new Integer(feedId).intValue(), 100, 0);
 			mFeedsHeadlines.put(feedId, result);
 			mForceFullRefresh = false;
 		}

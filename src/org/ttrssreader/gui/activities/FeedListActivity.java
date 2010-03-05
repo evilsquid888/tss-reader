@@ -149,7 +149,7 @@ public class FeedListActivity extends ListActivity implements IRefreshEndListene
 	
 	@Override
 	public void onRefreshEnd() {
-		if (!Controller.getInstance().getXmlRpcConnector().hasLastError()) {			
+		if (!Controller.getInstance().getTTRSSConnector().hasLastError()) {			
 			mAdapter.notifyDataSetChanged();
 
 			if (mCategoryTitle != null) {
@@ -158,7 +158,7 @@ public class FeedListActivity extends ListActivity implements IRefreshEndListene
 				this.setTitle(this.getResources().getString(R.string.ApplicationName) + " (" + mAdapter.getTotalUnreadCount() + ")");
 			}
 		} else {
-			openConnectionErrorDialog(Controller.getInstance().getXmlRpcConnector().getLastError());
+			openConnectionErrorDialog(Controller.getInstance().getTTRSSConnector().getLastError());
 		}
 		
 		mProgressDialog.dismiss();

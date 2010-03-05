@@ -49,9 +49,11 @@ public class ArticleReadStateUpdater implements IUpdatable {
 		Iterator<String> iter = mArticleIdList.iterator();
 		while (iter.hasNext()) {
 			articleId = iter.next();
-			Controller.getInstance().getXmlRpcConnector().setArticleRead(articleId, mArticleState);
 			
-			DataController.getInstance().getSingleArticleForFeedsHeadlines(mFeedId, articleId).setUnread(mArticleState == 0 ? true : false);			
+			// TODO: implement set article read
+			//Controller.getInstance().getTTRSSConnector().setArticleRead(articleId, mArticleState);
+			
+			//DataController.getInstance().getSingleArticleForFeedsHeadlines(mFeedId, articleId).setUnread(mArticleState == 0 ? true : false);			
 		}
 		
 		int deltaUnread = mArticleState == 0 ? mArticleIdList.size() : - mArticleIdList.size();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.ttrssreader"
-      android:versionCode="1" android:versionName="0.1.1.dev">
+      android:versionName="0.2.0.dev" android:versionCode="2">
     <application android:icon="@drawable/icon" android:label="@string/ApplicationName" android:description="@string/ApplicationDescription">
         <activity android:name=".TtrssReaderMainActivity"
                   android:label="@string/ApplicationName">

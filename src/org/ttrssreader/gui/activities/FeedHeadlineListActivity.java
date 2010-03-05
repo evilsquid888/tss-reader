@@ -169,7 +169,7 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
 
 	@Override
 	public void onRefreshEnd() {
-		if (!Controller.getInstance().getXmlRpcConnector().hasLastError()) {
+		if (!Controller.getInstance().getTTRSSConnector().hasLastError()) {
 			mAdapter.notifyDataSetChanged();
 
 			if (mFeedTitle != null) {
@@ -178,7 +178,7 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
 				this.setTitle(this.getResources().getString(R.string.ApplicationName) + " (" + mAdapter.getUnreadCount() + ")");
 			}
 		} else {
-			openConnectionErrorDialog(Controller.getInstance().getXmlRpcConnector().getLastError());
+			openConnectionErrorDialog(Controller.getInstance().getTTRSSConnector().getLastError());
 		}
 		
 		mProgressDialog.dismiss();		
