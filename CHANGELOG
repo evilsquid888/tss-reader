@@ -1,3 +1,9 @@
+0.2.0:
+- Switch to new TTRSS JSON-based API; XML-RPC is no longer supported (need TTRSS >= 1.4.0);
+- Articles can be marked as read when openning them (can be disabled);
+- Virtual feeds can be hide or shown;
+- Lazy vs. full refresh preference (lazy mode can have unread count error);
+
 0.1.0:
 - Initial release;
 - Read categories, feeds, feeds headlines and articles;
