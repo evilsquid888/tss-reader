@@ -20,5 +20,8 @@ public class PreferencesConstants {
 	public static String CONNECTION_URL = "ConnectionUrlPreference";
 	public static String CONNECTION_USERNAME = "ConnectionUsernamePreference";
 	public static String CONNECTION_PASSWORD = "ConnectionPasswordPreference";
+	
+	public static String MISC_SHOW_VIRTUAL = "MiscShowVirtualPreference";
+	public static String MISC_SHOW_VIRTUAL_UNREAD = "MiscShowVirtualUnreadPreference";
 
 }

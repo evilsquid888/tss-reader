@@ -112,19 +112,21 @@ public class DataController {
 		return result;
 	}
 	
-	public List<CategoryItem> getCategories() {
+	public List<CategoryItem> getCategories(boolean withVirtuals) {
 		boolean tmpForceFullRefresh = mForceFullRefresh;
 		
 		List<CategoryItem> finalList = new ArrayList<CategoryItem>();
 		
-		List<CategoryItem> virtualList = internalGetVirtualCategories();
-		
-		if (virtualList != null) {
-			Iterator<CategoryItem> iter = virtualList.iterator();
-			while (iter.hasNext()) {
-				finalList.add(iter.next());
-			}		
-			Collections.sort(finalList, new VirtualCategoryItemComparator());
+		if (withVirtuals) {
+			List<CategoryItem> virtualList = internalGetVirtualCategories();
+
+			if (virtualList != null) {
+				Iterator<CategoryItem> iter = virtualList.iterator();
+				while (iter.hasNext()) {
+					finalList.add(iter.next());
+				}		
+				Collections.sort(finalList, new VirtualCategoryItemComparator());
+			}
 		}
 		
 		mForceFullRefresh = tmpForceFullRefresh;

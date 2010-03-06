@@ -36,7 +36,10 @@ import org.json.JSONObject;
 import org.ttrssreader.model.article.ArticleItem;
 import org.ttrssreader.model.category.CategoryItem;
 import org.ttrssreader.model.feed.FeedItem;
+import org.ttrssreader.preferences.PreferencesConstants;
 import org.ttrssreader.utils.Utils;
+
+import android.preference.PreferenceManager;
 
 public class TTRSSJsonConnector implements ITTRSSConnector {
 
@@ -59,16 +62,19 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 	private String mServerUrl;
 	private String mUserName;
 	private String mPassword;
+	private boolean mShowUnreadInVirtualFeeds;
 	
 	private String mSessionId;
 	
 	private String mLastError = "";
 	private boolean mHasLastError = false;
 	
-	public TTRSSJsonConnector(String serverUrl, String userName, String password) {
+	public TTRSSJsonConnector(String serverUrl, String userName, String password, boolean showUnreadInVirtualFeeds) {
 		mServerUrl = serverUrl;
 		mUserName = userName;
 		mPassword = password;
+		
+		mShowUnreadInVirtualFeeds = showUnreadInVirtualFeeds;
 		
 		mSessionId = null;
 	}
@@ -508,22 +514,26 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 		return result;
 	}
 
+	private int getFeedCount(int feedId) {	
+		return getFeedHeadlines(feedId, 100, 0).size();
+	}
+	
 	@Override
 	public List<CategoryItem> getVirtualFeeds() {
-		List<CategoryItem> finalResult = new ArrayList<CategoryItem>();
+		List<CategoryItem> finalResult = new ArrayList<CategoryItem>();				
 		
 		CategoryItem categoryItem;
 		
-		categoryItem = new CategoryItem("-1", "Starred articles", 0);
+		categoryItem = new CategoryItem("-1", "Starred articles", mShowUnreadInVirtualFeeds ? getFeedCount(-1) : 0);
 		finalResult.add(categoryItem);
 		
-		categoryItem = new CategoryItem("-2", "Published articles", 0);
+		categoryItem = new CategoryItem("-2", "Published articles", mShowUnreadInVirtualFeeds ? getFeedCount(-2) : 0);
 		finalResult.add(categoryItem);
 		
-		categoryItem = new CategoryItem("-3", "Fresh articles", 0);
+		categoryItem = new CategoryItem("-3", "Fresh articles", mShowUnreadInVirtualFeeds ? getFeedCount(-3) : 0);
 		finalResult.add(categoryItem);
 		
-		categoryItem = new CategoryItem("-4", "All articles", 0);
+		categoryItem = new CategoryItem("-4", "All articles", mShowUnreadInVirtualFeeds ? getFeedCount(-4) : 0);
 		finalResult.add(categoryItem);
 		
 		return finalResult;

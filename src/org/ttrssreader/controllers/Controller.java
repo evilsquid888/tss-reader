@@ -18,14 +18,11 @@ package org.ttrssreader.controllers;
 import org.ttrssreader.net.ITTRSSConnector;
 import org.ttrssreader.net.TTRSSJsonConnector;
 import org.ttrssreader.preferences.PreferencesConstants;
-import org.ttrssreader.xmlrpc.TtrssXmlRpcConnector;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
 
 public class Controller {
-	
-	private final static String XML_RPC_END_URL = "xml-rpc.php";
 	
 	private final static String JSON_END_URL = "api/";
 	
@@ -48,14 +45,6 @@ public class Controller {
 	public void initializeXmlRpcConnector(Context context) {
 		String url = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferencesConstants.CONNECTION_URL, "http://localhost/");
 		
-		/*
-		if (!url.endsWith(XML_RPC_END_URL)) {
-			if (!url.endsWith("/")) {
-				url += "/";
-			}
-			url += XML_RPC_END_URL;
-		}
-		*/
 		if (!url.endsWith(JSON_END_URL)) {
 			if (!url.endsWith("/")) {
 				url += "/";
@@ -66,10 +55,9 @@ public class Controller {
 		String userName = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferencesConstants.CONNECTION_USERNAME, "admin");
 		String password = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferencesConstants.CONNECTION_PASSWORD, "password");
 		
-		//mTTRSSConnector = new TtrssXmlRpcConnector(url, userName, password);
-		mTTRSSConnector = new TTRSSJsonConnector(url, userName, password);
+		boolean showUnreadInVirtualFeeds = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.MISC_SHOW_VIRTUAL_UNREAD, false);
 		
-		//((TTRSSJsonConnector) mTTRSSConnector).testConnection();
+		mTTRSSConnector = new TTRSSJsonConnector(url, userName, password, showUnreadInVirtualFeeds);
 		
 		mRefreshNeeded = true;
 	}

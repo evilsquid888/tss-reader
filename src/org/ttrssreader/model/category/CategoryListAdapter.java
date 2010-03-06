@@ -20,9 +20,11 @@ import java.util.List;
 import org.ttrssreader.R;
 import org.ttrssreader.controllers.DataController;
 import org.ttrssreader.model.IRefreshable;
+import org.ttrssreader.preferences.PreferencesConstants;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,7 +162,7 @@ public class CategoryListAdapter extends BaseAdapter implements IRefreshable {
 
 	public void refreshData() {
 		
-		mCategories = DataController.getInstance().getCategories();
+		mCategories = DataController.getInstance().getCategories(PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(PreferencesConstants.MISC_SHOW_VIRTUAL, true));
 		
 	}
 

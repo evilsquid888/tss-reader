@@ -37,7 +37,8 @@ public class PreferencesActivity extends PreferenceActivity {
 			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 				if ((key.equals(PreferencesConstants.CONNECTION_URL)) ||
 						(key.equals(PreferencesConstants.CONNECTION_USERNAME)) ||
-						(key.equals(PreferencesConstants.CONNECTION_PASSWORD))) {
+						(key.equals(PreferencesConstants.CONNECTION_PASSWORD)) ||
+						(key.equals(PreferencesConstants.MISC_SHOW_VIRTUAL_UNREAD))) {
 					updatePreferences();
 				}
 			}			
