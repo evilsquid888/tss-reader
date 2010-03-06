@@ -140,13 +140,15 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 		
 		String strResponse = doRequest(url);
 		
-		try {
-			
-			result = new TTRSSJsonResult(strResponse);
-			
-		} catch (JSONException e) {
-			mHasLastError = true;
-    		mLastError = e.getMessage();
+		if (!mHasLastError) {
+			try {
+
+				result = new TTRSSJsonResult(strResponse);
+
+			} catch (JSONException e) {
+				mHasLastError = true;
+				mLastError = e.getMessage();
+			}
 		}
         
         return result;
