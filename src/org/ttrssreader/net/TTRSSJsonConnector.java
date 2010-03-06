@@ -18,7 +18,9 @@ package org.ttrssreader.net;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -42,13 +44,17 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 	private static final String OP_GET_UNREAD = "?op=getUnread&sid=%s";
 	private static final String OP_GET_CATEGORIES = "?op=getCategories&sid=%s";
 	private static final String OP_GET_FEEDS = "?op=getFeeds&sid=%s";
-	private static final String OP_GET_FEEDHEADLINES = "?op=getHeadlines";
+	private static final String OP_GET_FEEDHEADLINES = "?op=getHeadlines&sid=%s&feed_id=%s";
+	private static final String OP_GET_ARTICLE = "?op=getArticle&sid=%s&article_id=%s";
 	
 	private static final String ERROR_NAME = "{\"error\":";
 	private static final String SESSION_ID = "session_id";
 	private static final String ID_NAME = "id";
 	private static final String TITLE_NAME = "title";
 	private static final String UNREAD_NAME = "unread";
+	private static final String CAT_ID_NAME = "cat_id";
+	private static final String FEED_URL_NAME = "feed_url";
+	private static final String UPDATED_NAME = "updated";
 	
 	private String mServerUrl;
 	private String mUserName;
@@ -227,8 +233,41 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 	
 	@Override
 	public Map<?, ?> getArticle(int articleId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Map<String, String> finalResult = new Hashtable<String, String>();
+		
+		if (mSessionId == null) {
+			login();
+			
+			if (mHasLastError) {
+				return null;
+			}
+		}
+		
+		if (mSessionId == null) {
+			login();
+			
+			if (mHasLastError) {
+				return null;
+			}
+		}
+		
+		String url = mServerUrl + String.format(OP_GET_ARTICLE, mSessionId, articleId);
+		
+		TTRSSJsonResult jsonResult = getJSONResponse(url);
+		
+		try {
+			
+			for (int i = 0; i < jsonResult.getNames().length(); i++) {			
+				finalResult.put(jsonResult.getNames().getString(i), jsonResult.getValues().getString(i));							
+			}
+			
+		} catch (JSONException e) {
+			mHasLastError = true;
+			mLastError = e.getMessage();
+		}
+		
+		return finalResult;
 	}
 
 	@Override
@@ -247,8 +286,7 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 		String url = mServerUrl + String.format(OP_GET_CATEGORIES, mSessionId);
 		
 		JSONArray jsonResult = getJSONResponseAsArray(url);
-				
-		int i = 0;
+			
 		JSONObject object;
 		
 		CategoryItem categoryItem;
@@ -258,14 +296,14 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 		int unread = 0;
 		
 		try {
-			while (i < jsonResult.length()) {
+			for (int i = 0; i < jsonResult.length(); i++) {
 				object = jsonResult.getJSONObject(i);
 
 				JSONArray names = object.names();
 				JSONArray values = object.toJSONArray(names);
 				
-				int j = 0;
-				while (j < names.length()) {
+				for (int j = 0; j < names.length(); j++) {
+		
 					if (names.getString(j).equals(ID_NAME)) {
 						id = values.getString(j);
 					} else if (names.getString(j).equals(TITLE_NAME)) {
@@ -273,16 +311,13 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 					} else  if (names.getString(j).equals(UNREAD_NAME)) {
 						unread = values.getInt(j);
 					}
-					
-					j++;
+			
 				}
 				categoryItem = new CategoryItem(id,
 						title,
 						unread);
 				
 				finalResult.add(categoryItem);
-				
-				i++;
 			}
 		} catch (JSONException e) {
 			mHasLastError = true;
@@ -294,8 +329,63 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 
 	@Override
 	public List<ArticleItem> getFeedHeadlines(int feedId, int limit, int filter) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		ArrayList<ArticleItem> finalResult = new ArrayList<ArticleItem>();
+		
+		if (mSessionId == null) {
+			login();
+			
+			if (mHasLastError) {
+				return null;
+			}
+		}
+		
+		String url = mServerUrl + String.format(OP_GET_FEEDHEADLINES, mSessionId, feedId);
+		
+		JSONArray jsonResult = getJSONResponseAsArray(url);
+		
+		JSONObject object;
+		ArticleItem articleItem;
+		
+		try {
+			for (int i = 0; i < jsonResult.length(); i++) {
+				object = jsonResult.getJSONObject(i);
+				
+				JSONArray names = object.names();
+				JSONArray values = object.toJSONArray(names);
+				
+				String id = null;
+				String title = null;
+				boolean unread = false;
+				String updated = null;						
+				
+				for (int j = 0; j < names.length(); j++) {
+				
+					if (names.getString(j).equals(ID_NAME)) {
+						id = values.getString(j);
+					} else  if (names.getString(j).equals(TITLE_NAME)) {
+						title = values.getString(j);
+					} else  if (names.getString(j).equals(UNREAD_NAME)) {
+						unread = values.getBoolean(j);
+					}else  if (names.getString(j).equals(UPDATED_NAME)) {
+						updated = values.getString(j);
+					}									
+				}
+				
+				articleItem = new ArticleItem(String.valueOf(feedId),
+						id,
+						title,
+						unread,
+						new Date(new Long(updated + "000").longValue()));
+				
+				finalResult.add(articleItem);
+			}
+		} catch (JSONException e) {
+			mHasLastError = true;
+			mLastError = e.getMessage();
+		}
+		
+		return finalResult;
 	}
 
 	@Override
@@ -320,7 +410,6 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 		
 		JSONArray jsonResult = getJSONResponseAsArray(url);
 				
-		int i = 0;
 		JSONObject object;
 		
 		FeedItem feedItem;
@@ -333,27 +422,26 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 		int unread = 0;
 		
 		try {
-			while (i < jsonResult.length()) {
+			for (int i = 0; i < jsonResult.length(); i++) {
 				object = jsonResult.getJSONObject(i);
 				
 				JSONArray names = object.names();
 				JSONArray values = object.toJSONArray(names);
 				
-				int j = 0;
-				while (j < names.length()) {
-					if (names.getString(j).equals("cat_id")) {
+				for (int j = 0; j < names.length(); j++) {
+					
+					if (names.getString(j).equals(CAT_ID_NAME)) {
 						categoryId = values.getString(j);
 					} else if (names.getString(j).equals(ID_NAME)) {
 						id = values.getString(j);
 					} else  if (names.getString(j).equals(TITLE_NAME)) {
 						title = values.getString(j);
-					} else  if (names.getString(j).equals("feed_url")) {
+					} else  if (names.getString(j).equals(FEED_URL_NAME)) {
 						feedUrl = values.getString(j);
 					}else  if (names.getString(j).equals(UNREAD_NAME)) {
 						unread = values.getInt(j);
 					}
 					
-					j++;
 				}
 				
 				feedItem = new FeedItem(categoryId,
@@ -369,8 +457,6 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 				}
 				
 				feedItemList.add(feedItem);
-				
-				i++;
 			}
 		} catch (JSONException e) {
 			mHasLastError = true;
@@ -424,8 +510,23 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 
 	@Override
 	public List<CategoryItem> getVirtualFeeds() {
-		// TODO Auto-generated method stub
-		return null;
+		List<CategoryItem> finalResult = new ArrayList<CategoryItem>();
+		
+		CategoryItem categoryItem;
+		
+		categoryItem = new CategoryItem("-1", "Starred articles", 0);
+		finalResult.add(categoryItem);
+		
+		categoryItem = new CategoryItem("-2", "Published articles", 0);
+		finalResult.add(categoryItem);
+		
+		categoryItem = new CategoryItem("-3", "Fresh articles", 0);
+		finalResult.add(categoryItem);
+		
+		categoryItem = new CategoryItem("-4", "All articles", 0);
+		finalResult.add(categoryItem);
+		
+		return finalResult;
 	}
 
 	@Override

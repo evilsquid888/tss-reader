@@ -274,7 +274,7 @@ public class TtrssXmlRpcConnector implements ITTRSSConnector {
 			Map<?, ?> result = (Map<?, ?>) tmpResult;
 			
 			Map<?, ?> item;
-			ArticleItem feedItem;
+			ArticleItem articleItem;
 			
 			finalResult = new ArrayList<ArticleItem>();
 			
@@ -283,14 +283,14 @@ public class TtrssXmlRpcConnector implements ITTRSSConnector {
 				
 				item = (Map<?, ?>) feedArray[i];
 				
-				feedItem = new ArticleItem(String.valueOf(feedId),
+				articleItem = new ArticleItem(String.valueOf(feedId),
 						item.get("id").toString(),
 						item.get("title").toString(),
 						new Boolean(item.get("unread").toString()).booleanValue(),
 						// PHP strtotime gives timestamp in seconds.
 						new Date(new Long(item.get("updated").toString() + "000").longValue()));
 				
-				finalResult.add(feedItem);
+				finalResult.add(articleItem);
 			}
 		}
 		
