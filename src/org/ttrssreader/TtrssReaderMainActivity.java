@@ -54,7 +54,7 @@ public class TtrssReaderMainActivity extends ListActivity implements IRefreshEnd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        Controller.getInstance().initializeXmlRpcController(this);
+        Controller.getInstance().checkAndInitializeController(this);
         
         mCategoryListView = getListView();                                                              
     }

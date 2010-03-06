@@ -23,5 +23,6 @@ public class PreferencesConstants {
 	
 	public static String MISC_SHOW_VIRTUAL = "MiscShowVirtualPreference";
 	public static String MISC_SHOW_VIRTUAL_UNREAD = "MiscShowVirtualUnreadPreference";
+	public static String MISC_ALWAYS_FULL_REFRESH = "MiscAlwaysFullRefreshPreference";
 
 }

@@ -58,9 +58,13 @@ public class DataController {
 		mForceFullRefresh = true;
 	}
 	
+	private boolean needFullRefresh() {
+		return mForceFullRefresh || Controller.getInstance().isAlwaysPerformFullRefresh();
+	}
+	
 	private List<CategoryItem> internalGetVirtualCategories() {
 		if ((mVirtualCategories == null) ||
-				(mForceFullRefresh)) {
+				(needFullRefresh())) {
 			mVirtualCategories = Controller.getInstance().getTTRSSConnector().getVirtualFeeds();
 			mForceFullRefresh = false;
 		}
@@ -69,7 +73,7 @@ public class DataController {
 	
 	private List<CategoryItem> internalGetCategories() {
 		if ((mCategories == null) ||
-				(mForceFullRefresh)) {
+				(needFullRefresh())) {
 			mCategories = Controller.getInstance().getTTRSSConnector().getCategories();
 			mForceFullRefresh = false;
 		}
@@ -152,7 +156,7 @@ public class DataController {
 	
 	public Map<String, List<FeedItem>> getSubscribedFeeds() {
 		if ((mSubscribedFeeds == null) ||
-				(mForceFullRefresh)) {
+				(needFullRefresh())) {
 			mSubscribedFeeds = Controller.getInstance().getTTRSSConnector().getSubsribedFeeds();
 			mForceFullRefresh = false;
 		}
@@ -208,7 +212,7 @@ public class DataController {
 		List<ArticleItem> result = mFeedsHeadlines.get(feedId);
 		
 		if ((result == null) ||
-				(mForceFullRefresh)) {
+				(needFullRefresh())) {
 			result = Controller.getInstance().getTTRSSConnector().getFeedHeadlines(new Integer(feedId).intValue(), 100, 0);
 			mFeedsHeadlines.put(feedId, result);
 			mForceFullRefresh = false;

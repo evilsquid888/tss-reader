@@ -32,5 +32,10 @@
 			android:defaultValue="false"
 			android:summary="@string/DisplayVirtualUnreadPreferenceSummary"
 			android:key="MiscShowVirtualUnreadPreference" />
+		<CheckBoxPreference
+			android:title="@string/AlwaysFullRefreshPreferenceTitle"
+			android:defaultValue="false"
+			android:summary="@string/AlwaysFullRefreshPreferenceSummary"
+			android:key="MiscAlwaysFullRefreshPreference" />
 	</PreferenceCategory>
 </PreferenceScreen>

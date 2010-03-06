@@ -26,10 +26,12 @@ public class Controller {
 	
 	private final static String JSON_END_URL = "api/";
 	
-	private boolean mIsXmlRpcClientLibInitialized = false;
+	private boolean mIsControllerInitialized = false;
 	private ITTRSSConnector mTTRSSConnector;
 	
 	private boolean mRefreshNeeded = false;
+	
+	private boolean mAlwaysFullRefresh = false;
 	
 	private static Controller mInstance = null;
 	
@@ -42,7 +44,7 @@ public class Controller {
 		return mInstance;
 	}
 	
-	public void initializeXmlRpcConnector(Context context) {
+	public void initializeController(Context context) {
 		String url = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferencesConstants.CONNECTION_URL, "http://localhost/");
 		
 		if (!url.endsWith(JSON_END_URL)) {
@@ -57,17 +59,19 @@ public class Controller {
 		
 		boolean showUnreadInVirtualFeeds = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.MISC_SHOW_VIRTUAL_UNREAD, false);
 		
+		mAlwaysFullRefresh = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.MISC_ALWAYS_FULL_REFRESH, false);
+		
 		mTTRSSConnector = new TTRSSJsonConnector(url, userName, password, showUnreadInVirtualFeeds);
 		
 		mRefreshNeeded = true;
 	}
 	
-	public void initializeXmlRpcController(final Context context) {
-		if (!mIsXmlRpcClientLibInitialized) {					
+	public void checkAndInitializeController(final Context context) {
+		if (!mIsControllerInitialized) {					
 
-			initializeXmlRpcConnector(context);
+			initializeController(context);
 
-			mIsXmlRpcClientLibInitialized = true;
+			mIsControllerInitialized = true;
 		}
 	}
 	
@@ -81,6 +85,10 @@ public class Controller {
 
 	public void setRefreshNeeded(boolean mRefreshNeeded) {
 		this.mRefreshNeeded = mRefreshNeeded;
+	}
+	
+	public boolean isAlwaysPerformFullRefresh() {
+		return mAlwaysFullRefresh;
 	}
 
 }

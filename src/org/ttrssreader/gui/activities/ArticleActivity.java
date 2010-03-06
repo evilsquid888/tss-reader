@@ -59,7 +59,7 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.articletem);
 		
-		Controller.getInstance().initializeXmlRpcController(this);
+		Controller.getInstance().checkAndInitializeController(this);
 		
 		webview = (WebView) findViewById(R.id.webview);
 		webview.getSettings().setJavaScriptEnabled(true);				

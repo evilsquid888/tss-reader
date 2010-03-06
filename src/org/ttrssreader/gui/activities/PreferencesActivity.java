@@ -38,7 +38,8 @@ public class PreferencesActivity extends PreferenceActivity {
 				if ((key.equals(PreferencesConstants.CONNECTION_URL)) ||
 						(key.equals(PreferencesConstants.CONNECTION_USERNAME)) ||
 						(key.equals(PreferencesConstants.CONNECTION_PASSWORD)) ||
-						(key.equals(PreferencesConstants.MISC_SHOW_VIRTUAL_UNREAD))) {
+						(key.equals(PreferencesConstants.MISC_SHOW_VIRTUAL_UNREAD)) ||
+						(key.equals(PreferencesConstants.MISC_ALWAYS_FULL_REFRESH))) {
 					updatePreferences();
 				}
 			}			
@@ -46,7 +47,7 @@ public class PreferencesActivity extends PreferenceActivity {
 	}
 	
 	private void updatePreferences() {
-		Controller.getInstance().initializeXmlRpcConnector(this);
+		Controller.getInstance().initializeController(this);
 	}
 
 }

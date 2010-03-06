@@ -35,6 +35,8 @@
 <string name="DisplayVirtualPreferenceSummary">Uncheck to hide TTRSS virtual feeds.</string>
 <string name="DisplayVirtualUnreadPreferenceTitle">Show unread count in virtual feeds</string>
 <string name="DisplayVirtualUnreadPreferenceSummary">Uncheck for performances.</string>
+<string name="AlwaysFullRefreshPreferenceTitle">Always perform a full refresh</string>
+<string name="AlwaysFullRefreshPreferenceSummary">Check to always perform full data refresh.</string>
 
 <string name="ConnectionErrorActivity.Title">Oups...</string>
 <string name="ConnectionErrorActivity.UserMessage">I was unable to connect to your Tiny Tiny RSS instance, please check your connection and/or connection settings.</string>

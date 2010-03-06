@@ -53,7 +53,7 @@ public class FeedListActivity extends ListActivity implements IRefreshEndListene
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.feedlist);
 		
-		Controller.getInstance().initializeXmlRpcController(this);
+		Controller.getInstance().checkAndInitializeController(this);
 
 		mFeedListView = getListView();
 

@@ -58,7 +58,7 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.feedlist);
 		
-		Controller.getInstance().initializeXmlRpcController(this);
+		Controller.getInstance().checkAndInitializeController(this);
 
 		mFeedHeadlineListView = getListView();
 
