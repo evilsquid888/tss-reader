@@ -82,30 +82,30 @@ public class FeedHeadlineListAdapter extends BaseAdapter implements IRefreshable
 		return result;
 	}
 	
-	public List<String> getReadIdList() {
-		List<String> result = new ArrayList<String>();
+	public List<ArticleItem> getArticleReadList() {
+		List<ArticleItem> result = new ArrayList<ArticleItem>();
 		
 		ArticleItem item;
 		Iterator<ArticleItem> iter = mFeeds.iterator();
 		while (iter.hasNext()) {
 			item = iter.next();
 			if (!item.isUnread()) {
-				result.add(item.getId());
+				result.add(item);
 			}
 		}
 		
 		return result;
 	}
 	
-	public List<String> getUnreadIdList() {
-		List<String> result = new ArrayList<String>();
+	public List<ArticleItem> getArticleUnreadList() {
+		List<ArticleItem> result = new ArrayList<ArticleItem>();
 		
 		ArticleItem item;
 		Iterator<ArticleItem> iter = mFeeds.iterator();
 		while (iter.hasNext()) {
 			item = iter.next();
 			if (item.isUnread()) {
-				result.add(item.getId());
+				result.add(item);
 			}
 		}
 		

@@ -21,8 +21,10 @@ public class PreferencesConstants {
 	public static String CONNECTION_USERNAME = "ConnectionUsernamePreference";
 	public static String CONNECTION_PASSWORD = "ConnectionPasswordPreference";
 	
-	public static String MISC_SHOW_VIRTUAL = "MiscShowVirtualPreference";
-	public static String MISC_SHOW_VIRTUAL_UNREAD = "MiscShowVirtualUnreadPreference";
-	public static String MISC_ALWAYS_FULL_REFRESH = "MiscAlwaysFullRefreshPreference";
+	public static String USAGE_AUTOMATIC_MARK_READ = "UsageAutomaticMarkReadPreference";
+	
+	public static String DISPLAY_SHOW_VIRTUAL = "DisplayShowVirtualPreference";
+	public static String DISPLAY_SHOW_VIRTUAL_UNREAD = "DisplayShowVirtualUnreadPreference";
+	public static String DISPLAY_ALWAYS_FULL_REFRESH = "DisplayAlwaysFullRefreshPreference";
 
 }

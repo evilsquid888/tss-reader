@@ -22,55 +22,60 @@ import java.util.List;
 import org.ttrssreader.controllers.Controller;
 import org.ttrssreader.controllers.DataController;
 import org.ttrssreader.model.IUpdatable;
-import org.ttrssreader.model.feed.FeedItem;
 
 public class ArticleReadStateUpdater implements IUpdatable {
 	
-	private List<String> mArticleIdList;
+	private List<ArticleItem> mArticleList;
 	private String mFeedId;
 	private int mArticleState;
 	
-	public ArticleReadStateUpdater(String feedId, List<String> articleIdList, int articleState) {
+	public ArticleReadStateUpdater(String feedId, List<ArticleItem> articleList, int articleState) {
 		mFeedId = feedId;
-		mArticleIdList = articleIdList;
+		mArticleList = articleList;
 		mArticleState = articleState;
 	}
 	
-	public ArticleReadStateUpdater(String feedId, String articleId, int articleState) {
+	public ArticleReadStateUpdater(String feedId, ArticleItem article, int articleState) {
 		mFeedId = feedId;
-		mArticleIdList = new ArrayList<String>();
-		mArticleIdList.add(articleId);
+		mArticleList = new ArrayList<ArticleItem>();
+		mArticleList.add(article);
 		mArticleState = articleState;
 	}
 
 	@Override
 	public void update() {
-		String articleId;				
-		Iterator<String> iter = mArticleIdList.iterator();
+		ArticleItem article;				
+		Iterator<ArticleItem> iter = mArticleList.iterator();
 		
 		String idList = "";
 		
 		while (iter.hasNext()) {
-			articleId = iter.next();
+			article = iter.next();
 			
 			// Build a list of articles id to update.
 			if (idList.length() > 0) {
 				idList += ",";
 			}
 			
-			idList += articleId;
+			idList += article.getId();
 			
-			DataController.getInstance().getSingleArticleForFeedsHeadlines(mFeedId, articleId).setUnread(mArticleState == 1 ? true : false);			
+			DataController.getInstance().getSingleArticleForFeedsHeadlines(article.getFeedId(), article.getId()).setUnread(mArticleState == 1 ? true : false);
+			DataController.getInstance().getFeed(article.getFeedId()).setDeltaUnreadCount(mArticleState == 1 ? 1 : -1);
+			DataController.getInstance().getCategory(DataController.getInstance().getFeed(article.getFeedId()).getCategoryId()).setDeltaUnreadCount(mArticleState == 1 ? 1 : -1);
+			
+			// If on a virtual feeds, also update article state in it.
+			if ((mFeedId.equals("-1")) ||
+					(mFeedId.equals("-2")) ||
+					(mFeedId.equals("-3")) ||
+					(mFeedId.equals("-4"))) {
+				DataController.getInstance().getSingleArticleForFeedsHeadlines(mFeedId, article.getId()).setUnread(mArticleState == 1 ? true : false);
+				DataController.getInstance().getVirtualCategory(mFeedId).setDeltaUnreadCount(mArticleState == 1 ? 1 : -1);
+			}
 		}
 		
 		Controller.getInstance().getTTRSSConnector().setArticleRead(idList, mArticleState);
-		
-		int deltaUnread = mArticleState == 1 ? mArticleIdList.size() : - mArticleIdList.size();
-		
-		FeedItem feed = DataController.getInstance().getFeed(mFeedId);
-		feed.setDeltaUnreadCount(deltaUnread);
-		
-		DataController.getInstance().getCategory(feed.getCategoryId()).setDeltaUnreadCount(deltaUnread);
+				
+		int deltaUnread = mArticleState == 1 ? mArticleList.size() : - mArticleList.size();
 		DataController.getInstance().getVirtualCategory("-4").setDeltaUnreadCount(deltaUnread);
 		
 		Controller.getInstance().setRefreshNeeded(true);

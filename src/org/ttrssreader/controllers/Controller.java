@@ -32,6 +32,7 @@ public class Controller {
 	private boolean mRefreshNeeded = false;
 	
 	private boolean mAlwaysFullRefresh = false;
+	private boolean mAutomaticMarkRead = true;
 	
 	private static Controller mInstance = null;
 	
@@ -57,9 +58,11 @@ public class Controller {
 		String userName = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferencesConstants.CONNECTION_USERNAME, "admin");
 		String password = PreferenceManager.getDefaultSharedPreferences(context).getString(PreferencesConstants.CONNECTION_PASSWORD, "password");
 		
-		boolean showUnreadInVirtualFeeds = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.MISC_SHOW_VIRTUAL_UNREAD, false);
+		boolean showUnreadInVirtualFeeds = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.DISPLAY_SHOW_VIRTUAL_UNREAD, false);
 		
-		mAlwaysFullRefresh = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.MISC_ALWAYS_FULL_REFRESH, false);
+		mAlwaysFullRefresh = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.DISPLAY_ALWAYS_FULL_REFRESH, false);
+		
+		mAutomaticMarkRead = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(PreferencesConstants.USAGE_AUTOMATIC_MARK_READ, true);
 		
 		mTTRSSConnector = new TTRSSJsonConnector(url, userName, password, showUnreadInVirtualFeeds);
 		
@@ -89,6 +92,10 @@ public class Controller {
 	
 	public boolean isAlwaysPerformFullRefresh() {
 		return mAlwaysFullRefresh;
+	}
+	
+	public boolean isAutomaticMarkReadEnabled() {
+		return mAutomaticMarkRead;
 	}
 
 }

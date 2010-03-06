@@ -30,7 +30,11 @@
 <string name="ConnectionPasswordPreferenceTitle">Password</string>
 <string name="ConnectionPasswordPreferenceSummary">The password of your Tiny Tiny RSS account.</string>
 
-<string name="ConnectionPreferenceMiscTitle">Misc</string>
+<string name="UsagePreferenceCategoryTitle">Usage</string>
+<string name="AutomaticMarkReadPreferenceTitle">Automatically mark article as read</string>
+<string name="AutomaticMarkReadPreferenceSummary">If checked, articles will be marked as read when openning them.</string>
+
+<string name="DisplayPreferenceCategoryTitle">Display</string>
 <string name="DisplayVirtualPreferenceTitle">Show virtual feeds</string>
 <string name="DisplayVirtualPreferenceSummary">Uncheck to hide TTRSS virtual feeds.</string>
 <string name="DisplayVirtualUnreadPreferenceTitle">Show unread count in virtual feeds</string>

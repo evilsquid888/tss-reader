@@ -149,7 +149,7 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
 				this.getResources().getString(R.string.Commons_UpdateReadState),
 				this.getResources().getString(R.string.Commons_PleaseWait));
 		
-		new Updater(this, new ArticleReadStateUpdater(mFeedId, mAdapter.getUnreadIdList(), 0));
+		new Updater(this, new ArticleReadStateUpdater(mFeedId, mAdapter.getArticleUnreadList(), 0));
 	}
 	
 	private void setUnreadState() {
@@ -158,7 +158,7 @@ public class FeedHeadlineListActivity extends ListActivity implements IRefreshEn
 				this.getResources().getString(R.string.Commons_UpdateReadState),
 				this.getResources().getString(R.string.Commons_PleaseWait));
 		
-		new Updater(this, new ArticleReadStateUpdater(mFeedId, mAdapter.getReadIdList(), 1));
+		new Updater(this, new ArticleReadStateUpdater(mFeedId, mAdapter.getArticleReadList(), 1));
 	}
 
 	private void openConnectionErrorDialog(String errorMessage) {

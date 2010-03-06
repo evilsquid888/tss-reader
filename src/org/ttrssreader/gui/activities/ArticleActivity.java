@@ -138,7 +138,7 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 				this.getResources().getString(R.string.Commons_UpdateReadState),
 				this.getResources().getString(R.string.Commons_PleaseWait));
 		
-		new Updater(this, new ArticleReadStateUpdater(mFeedId, mArticleId, articleState));
+		new Updater(this, new ArticleReadStateUpdater(mFeedId, mArticleItem, articleState));
 	}
 	
 	private void openUrl(String url) {		
@@ -186,6 +186,11 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 					this.setTitle(this.getResources().getString(R.string.ApplicationName) + " - " + mArticleItem.getTitle());
 				} else {
 					this.setTitle(this.getResources().getString(R.string.ApplicationName));
+				}
+				
+				if ((mArticleItem.isUnread()) &&
+						(Controller.getInstance().isAutomaticMarkReadEnabled())) {
+					new ArticleReadStateUpdater(mArticleItem.getFeedId(), mArticleItem, 0).update();
 				}
 			}
 		} else {

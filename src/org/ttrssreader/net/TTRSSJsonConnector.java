@@ -55,6 +55,7 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 	private static final String UNREAD_NAME = "unread";
 	private static final String CAT_ID_NAME = "cat_id";
 	private static final String FEED_URL_NAME = "feed_url";
+	private static final String FEED_ID_NAME = "feed_id";
 	private static final String UPDATED_NAME = "updated";
 	
 	private String mServerUrl;
@@ -318,7 +319,8 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 				String id = null;
 				String title = null;
 				boolean unread = false;
-				String updated = null;						
+				String updated = null;
+				String realFeedId = null;
 				
 				for (int j = 0; j < names.length(); j++) {
 				
@@ -328,12 +330,14 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 						title = values.getString(j);
 					} else  if (names.getString(j).equals(UNREAD_NAME)) {
 						unread = values.getBoolean(j);
-					}else  if (names.getString(j).equals(UPDATED_NAME)) {
+					} else  if (names.getString(j).equals(UPDATED_NAME)) {
 						updated = values.getString(j);
+					} else  if (names.getString(j).equals(FEED_ID_NAME)) {
+						realFeedId = values.getString(j);
 					}									
 				}
 				
-				articleItem = new ArticleItem(String.valueOf(feedId),
+				articleItem = new ArticleItem(realFeedId,
 						id,
 						title,
 						unread,

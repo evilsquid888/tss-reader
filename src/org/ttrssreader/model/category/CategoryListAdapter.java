@@ -162,7 +162,7 @@ public class CategoryListAdapter extends BaseAdapter implements IRefreshable {
 
 	public void refreshData() {
 		
-		mCategories = DataController.getInstance().getCategories(PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(PreferencesConstants.MISC_SHOW_VIRTUAL, true));
+		mCategories = DataController.getInstance().getCategories(PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(PreferencesConstants.DISPLAY_SHOW_VIRTUAL, true));
 		
 	}
 
