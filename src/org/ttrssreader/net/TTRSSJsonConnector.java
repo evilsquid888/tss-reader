@@ -36,10 +36,7 @@ import org.json.JSONObject;
 import org.ttrssreader.model.article.ArticleItem;
 import org.ttrssreader.model.category.CategoryItem;
 import org.ttrssreader.model.feed.FeedItem;
-import org.ttrssreader.preferences.PreferencesConstants;
 import org.ttrssreader.utils.Utils;
-
-import android.preference.PreferenceManager;
 
 public class TTRSSJsonConnector implements ITTRSSConnector {
 
@@ -49,6 +46,7 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 	private static final String OP_GET_FEEDS = "?op=getFeeds&sid=%s";
 	private static final String OP_GET_FEEDHEADLINES = "?op=getHeadlines&sid=%s&feed_id=%s";
 	private static final String OP_GET_ARTICLE = "?op=getArticle&sid=%s&article_id=%s";
+	private static final String OP_UPDATE_ARTICLE = "?op=updateArticle&sid=%s&article_ids=%s&mode=%s&field=%s";
 	
 	private static final String ERROR_NAME = "{\"error\":";
 	private static final String SESSION_ID = "session_id";
@@ -190,51 +188,6 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 		}
 		
 		return result;
-	}
-	
-	public void testConnection() {
-		HttpClient httpclient = new DefaultHttpClient();
-		 
-		String url = mServerUrl + String.format(OP_LOGIN, mUserName, mPassword); 
-		
-		HttpPost httpPost = new HttpPost(url);
- 
-        // Execute the request
-        HttpResponse response;
-        
-        try {
-        	
-            response = httpclient.execute(httpPost);
-            
-            HttpEntity entity = response.getEntity();
-            
-            if (entity != null) {
-            	InputStream instream = entity.getContent();
-            	
-            	String result = Utils.convertStreamToString(instream);
-            	
-            	JSONObject json = new JSONObject(result);
-            	
-            	JSONArray nameArray = json.names();
-                JSONArray valArray = json.toJSONArray(nameArray);
-            	
-            	System.out.println(result);
-            }
-            
-            
-            
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-
 	}
 	
 	@Override
@@ -544,4 +497,64 @@ public class TTRSSJsonConnector implements ITTRSSConnector {
 		return mHasLastError;
 	}
 
+	@Override
+	public void setArticleRead(String articlesIds, int articleState) {
+		if (mSessionId == null) {
+			login();
+			
+			if (mHasLastError) {
+				return;
+			}
+		}
+		
+		String url = mServerUrl + String.format(OP_UPDATE_ARTICLE, mSessionId, articlesIds, articleState, 2);
+	
+		doRequest(url);
+	}
+
 }
+
+/*
+public void testConnection() {
+	HttpClient httpclient = new DefaultHttpClient();
+	 
+	String url = mServerUrl + String.format(OP_LOGIN, mUserName, mPassword); 
+	
+	HttpPost httpPost = new HttpPost(url);
+
+    // Execute the request
+    HttpResponse response;
+    
+    try {
+    	
+        response = httpclient.execute(httpPost);
+        
+        HttpEntity entity = response.getEntity();
+        
+        if (entity != null) {
+        	InputStream instream = entity.getContent();
+        	
+        	String result = Utils.convertStreamToString(instream);
+        	
+        	JSONObject json = new JSONObject(result);
+        	
+        	JSONArray nameArray = json.names();
+            JSONArray valArray = json.toJSONArray(nameArray);
+        	
+        	System.out.println(result);
+        }
+        
+        
+        
+    } catch (ClientProtocolException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    } catch (JSONException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+}
+*/

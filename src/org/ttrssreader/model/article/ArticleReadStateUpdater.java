@@ -47,16 +47,25 @@ public class ArticleReadStateUpdater implements IUpdatable {
 	public void update() {
 		String articleId;				
 		Iterator<String> iter = mArticleIdList.iterator();
+		
+		String idList = "";
+		
 		while (iter.hasNext()) {
 			articleId = iter.next();
 			
-			// TODO: implement set article read
-			//Controller.getInstance().getTTRSSConnector().setArticleRead(articleId, mArticleState);
+			// Build a list of articles id to update.
+			if (idList.length() > 0) {
+				idList += ",";
+			}
 			
-			//DataController.getInstance().getSingleArticleForFeedsHeadlines(mFeedId, articleId).setUnread(mArticleState == 0 ? true : false);			
+			idList += articleId;
+			
+			DataController.getInstance().getSingleArticleForFeedsHeadlines(mFeedId, articleId).setUnread(mArticleState == 1 ? true : false);			
 		}
 		
-		int deltaUnread = mArticleState == 0 ? mArticleIdList.size() : - mArticleIdList.size();
+		Controller.getInstance().getTTRSSConnector().setArticleRead(idList, mArticleState);
+		
+		int deltaUnread = mArticleState == 1 ? mArticleIdList.size() : - mArticleIdList.size();
 		
 		FeedItem feed = DataController.getInstance().getFeed(mFeedId);
 		feed.setDeltaUnreadCount(deltaUnread);

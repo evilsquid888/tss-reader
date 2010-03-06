@@ -298,14 +298,12 @@ public class TtrssXmlRpcConnector implements ITTRSSConnector {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Object setArticleRead(String articleId, int articleState) {
+	public void setArticleRead(String articleId, int articleState) {
 		List params = getNewParamListWithAuthentication();
 		params.add(new Integer(articleId));
 		params.add(articleState);
 		
-		Object result = internalExecute(METHOD_SET_ARTICLE_READ, params);
-		
-		return result;
+		internalExecute(METHOD_SET_ARTICLE_READ, params);
 	}
 		
 	/*

@@ -106,10 +106,10 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch(item.getItemId()) {
 		case MENU_MARK_READ:
-			changeReadState(1);
+			changeUnreadState(0);
 			return true;
 		case MENU_MARK_UNREAD:
-			changeReadState(0);
+			changeUnreadState(1);
 			return true;
 		case MENU_OPEN_LINK:
 			openLink();
@@ -130,11 +130,9 @@ public class ArticleActivity extends Activity implements IRefreshEndListener, IU
 
 		mAdapter = new ArticleItemAdapter(mFeedId, mArticleId);
 		new Refresher(this, mAdapter);
-		//mArticleItem = new ArticleItem(mFeedId, mArticleId);		
-		//new Refresher(this, mArticleItem);
 	}
 	
-	private void changeReadState(int articleState) {
+	private void changeUnreadState(int articleState) {
 		
 		mProgressDialog = ProgressDialog.show(this,
 				this.getResources().getString(R.string.Commons_UpdateReadState),
